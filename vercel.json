@@ -1,7 +1,8 @@
 {
   "version": 2,
   "outputDirectory": "artifacts/finance-app/dist/public",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
