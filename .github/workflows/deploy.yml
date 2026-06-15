@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Ganti jika branch utama Anda bukan main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Finance App
+        env:
+          BASE_PATH: /keuangan-opsnal-regu-1/
+          NODE_ENV: production
+        run: |
+          pnpm --filter @workspace/finance-app run build
+          cp artifacts/finance-app/dist/public/index.html artifacts/finance-app/dist/public/404.html
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: artifacts/finance-app/dist/public
+          branch: gh-pages
